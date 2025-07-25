@@ -1,0 +1,290 @@
+@using System.Globalization
+@using Microsoft.AspNetCore.Components
+
+@code {
+    private int SlotWidth => (CurrentView == "Day") ? 120 : (int)Math.Floor(1400.0 / TimeSlots.Count);
+    private int TimelineWidth => TimeSlots.Count * SlotWidth;
+}
+
+<div class="gantt-container">
+    <div class="gantt-main-row">
+        <div class="gantt-label-col">
+            <div class="row-label header-label"></div>
+            @foreach (var row in TaskRows)
+            {
+                <div class="row-label">@row.Name</div>
+            }
+        </div>
+        <div class="gantt-scroll-area">
+            <div class="gantt-timeline" style="width:@TimelineWidth; height:40px;">
+                @foreach (var slot in TimeSlots)
+                {
+                    <div class="timeline-slot @(CurrentView == "Day" ? "day-slot" : null)" style="width:@SlotWidth; height:40px;">@FormatTimeSlot(slot)</div>
+                }
+            </div>
+            @foreach (var row in TaskRows)
+            {
+                <div class="row-tasks" style="width:@TimelineWidth">
+                    @foreach (var task in row.Tasks)
+                    {
+                        <div class="task" style="@GetTaskStyle(task)">
+                            @task.Name
+                            <span class="tooltip">@task.Name (@task.Start.ToString("d MMM yyyy") - @task.End.ToString("d MMM yyyy"))</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .gantt-container {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        max-width: 1000px;
+        max-height: 700px;
+        width: 100%;
+        height: 100%;
+        overflow-x: unset;
+        box-sizing: border-box;
+    }
+    .gantt-header-row {
+        display: flex;
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        background: #fff;
+    }
+    .header-label {
+        height: 40px;
+        background: #f8f8f8;
+        border-right: 1px solid #ddd;
+    }
+    .gantt-scroll-area {
+        overflow-x: auto;
+        width: 100%;
+    }
+    .gantt-timeline, .row-tasks {
+        min-width: 100%;
+    }
+    .timeline-slot {
+        width: calc(100% / var(--slot-count));
+        border-right: 1px solid #ddd;
+        padding: 5px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+    .timeline-slot.day-slot {
+        min-width: 60px;
+        width: 60px;
+        max-width: 80px;
+    }
+    .gantt-row {
+        display: flex;
+        border-bottom: 1px solid #ddd;
+        min-width: 100%;
+    }
+    .row-label {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+        padding: 10px;
+        border-right: 1px solid #ddd;
+        background: #f8f8f8;
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        box-shadow: 2px 0 4px -2px #ccc;
+    }
+    .row-tasks {
+        display: flex;
+        flex: 1;
+        position: relative;
+        min-height: 50px;
+    }
+    .task {
+        position: absolute;
+        background: #4CAF50;
+        color: white;
+        padding: 5px;
+        border-radius: 3px;
+        margin: 2px;
+        min-width: 50px;
+        text-align: left;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .task:hover .tooltip {
+        visibility: visible;
+    }
+    .tooltip {
+        visibility: hidden;
+        background: #333;
+        color: white;
+        padding: 5px;
+        border-radius: 3px;
+        position: absolute;
+        z-index: 1;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+    .gantt-main-row {
+        display: flex;
+        width: 100%;
+    }
+    .gantt-label-col {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+        max-width: 150px;
+    }
+    .gantt-scroll-area {
+        overflow-x: auto;
+        width: 100%;
+    }
+    .gantt-timeline, .row-tasks {
+        display: flex;
+        min-width: 100%;
+    }
+    .gantt-timeline {
+        height: 40px;
+        display: flex;
+    }
+    .row-label {
+        width: 150px;
+        min-width: 150px;
+        max-width: 150px;
+        /* sticky 設定可保留 */
+    }
+</style>
+
+@code {
+    [Parameter]
+    public string CurrentView { get; set; } = "Day";
+
+    private List<TaskRow> TaskRows { get; set; } = new();
+    private List<DateTime> TimeSlots { get; set; } = new();
+
+    private class TaskRow
+    {
+        public string Name { get; set; } = string.Empty;
+        public List<TaskItem> Tasks { get; set; } = new();
+    }
+
+    private class TaskItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        // Sample data
+        TaskRows = new List<TaskRow>
+        {
+            new TaskRow
+            {
+                Name = "Project A",
+                Tasks = new List<TaskItem>
+                {
+                    new TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 10) }
+                    // new TaskItem { Name = "Task 2", Start = new DateTime(2025, 7, 11), End = new DateTime(2025, 7, 15) },
+                    // new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 17), End = new DateTime(2025, 7, 31) }
+                }
+            },
+            new TaskRow
+            {
+                Name = "Project B",
+                Tasks = new List<TaskItem>
+                {
+                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) }
+                    //new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            }
+        };
+
+        UpdateTimeSlots();
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateTimeSlots();
+    }
+
+    private void UpdateTimeSlots()
+    {
+        TimeSlots.Clear();
+        var startDate = DateTime.Today.AddMonths(-1);
+        var endDate = DateTime.Today.AddMonths(1);
+
+        switch (CurrentView)
+        {
+            case "Day":
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    TimeSlots.Add(date);
+                }
+                break;
+            case "Week":
+                startDate = startDate.AddDays(-(int)startDate.DayOfWeek);
+                endDate = endDate.AddDays(7 - (int)endDate.DayOfWeek);
+                for (var date = startDate; date <= endDate; date = date.AddDays(7))
+                {
+                    TimeSlots.Add(date);
+                }
+                break;
+            case "Month":
+                startDate = new DateTime(startDate.Year, startDate.Month, 1);
+                endDate = new DateTime(endDate.Year, endDate.Month, 1).AddMonths(1).AddDays(-1);
+                for (var date = startDate; date <= endDate; date = date.AddMonths(1))
+                {
+                    TimeSlots.Add(date);
+                }
+                break;
+            case "Year":
+                startDate = new DateTime(startDate.Year, 1, 1);
+                endDate = new DateTime(endDate.Year, 12, 31);
+                for (var date = startDate; date <= endDate; date = date.AddYears(1))
+                {
+                    TimeSlots.Add(date);
+                }
+                break;
+        }
+    }
+
+    private string FormatTimeSlot(DateTime slot)
+    {
+        return CurrentView switch
+        {
+            "Day" => slot.ToString("M/d"), // 只顯示月/日
+            "Week" => $"{slot:yyyy/MM/dd} - {slot.AddDays(6):MM/dd}",
+            "Month" => slot.ToString("MMM yyyy"),
+            "Year" => slot.ToString("yyyy"),
+            _ => slot.ToString("d MMM yyyy")
+        };
+    }
+
+    private string GetTaskStyle(TaskItem task)
+    {
+        if (TimeSlots == null || TimeSlots.Count == 0)
+            return "";
+
+        int startIndex = TimeSlots.FindIndex(d => d.Date == task.Start.Date);
+        int endIndex = TimeSlots.FindIndex(d => d.Date == task.End.Date);
+
+        if (startIndex == -1 || endIndex == -1)
+            return "";
+
+        int slotCount = TimeSlots.Count;
+        var leftOffset = (startIndex * 100.0) / slotCount;
+        var width = ((endIndex - startIndex + 1) * 100.0) / slotCount;
+
+        return $"left: {leftOffset:F2}%; width: {width:F2}%;";
+    }
+} 
