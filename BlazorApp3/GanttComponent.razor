@@ -152,7 +152,7 @@
     color: white;
     padding: 5px;
     border-radius: 3px;
-    margin: 2px 0;
+    margin: 5px 0;
     min-width: 50px;
     text-align: left;
     cursor: pointer;
@@ -205,26 +205,27 @@
                     new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 16), End = new DateTime(2025, 7, 31) }
                 }
              },
-            // new TaskRow
-            // {
-            //     Name = "Project B",
-            //     Color = "#2196F3",
-            //     Tasks = new List<TaskItem>
-            //     {
-            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-            //     }
-            // },
-            // new TaskRow
-            // {
-            //     Name = "Project C",
-            //     Color = "#FFC107",
-            //     Tasks = new List<TaskItem>
-            //     {
-            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
-            //         new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
-            //     }
-            // },
+            new TaskRow
+            {
+                Name = "Project B",
+                Color = "#2196F3",
+                Tasks = new List<TaskItem>
+                {
+                    new TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 12) },
+                    new TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 7, 19) },
+                    new TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new TaskRow
+            {
+                Name = "Project C",
+                Color = "#FFC107",
+                Tasks = new List<TaskItem>
+                {
+                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
+                    new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
+                }
+            },
             // new TaskRow
             // {
             //     Name = "Project D",
