@@ -3,7 +3,7 @@
 @using Microsoft.JSInterop
 
 @code {
-    private int SlotWidth => (CurrentView == "Day") ? 120 : (int)Math.Floor(1400.0 / TimeSlots.Count);
+    private int SlotWidth => (CurrentView == "Day") ? 67 : (int)Math.Floor(1400.0 / TimeSlots.Count);
     private int TimelineWidth => TimeSlots.Count * SlotWidth;
 }
 
@@ -119,7 +119,8 @@
     height: 100%;
 }
 .gantt-tasks {
-    min-width: 100%;
+    width: 4422px;
+    min-width: 4422px;
 }
 .gantt-label-col, .gantt-tasks-col {
     display: flex;
@@ -215,8 +216,8 @@
                 Color = "#FFC107",
                 Tasks = new List<TaskItem>
                 {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
+                    new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
                 }
             },
             new TaskRow
@@ -225,8 +226,8 @@
                 Color = "#E91E63",
                 Tasks = new List<TaskItem>
                 {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 12) },
+                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 8, 18) }
                 }
             },
             new TaskRow
@@ -337,12 +338,12 @@
             return;
 
         var allTasks = TaskRows.SelectMany(r => r.Tasks).ToList();
-        var minDate = allTasks.Min(t => t.Start).Date;
-        var maxDate = allTasks.Max(t => t.End).Date;
+        var minDate = allTasks.Min(t => t.Start).Date;  // 所有任務的最早開始日
+        var maxDate = allTasks.Max(t => t.End).Date;    // 所有任務的最晚結束日
 
-        // 可選：加 buffer
-        minDate = minDate.AddDays(-3);
-        maxDate = maxDate.AddDays(3);
+        // 加 buffer（前後各 15 天）
+        minDate = minDate.AddDays(-15);
+        maxDate = maxDate.AddDays(15);
 
         switch (CurrentView)
         {
@@ -368,6 +369,13 @@
                 for (var date = minDate; date <= maxDate; date = date.AddYears(1))
                     TimeSlots.Add(date);
                 break;
+        }
+
+        // Debug: 印出時間軸資訊
+        Console.WriteLine($"TimeSlots.Count: {TimeSlots.Count}, TimelineWidth: {TimelineWidth}");
+        if (TimeSlots.Count > 0)
+        {
+            Console.WriteLine($"First Date: {TimeSlots[0]}, Last Date: {TimeSlots[TimeSlots.Count-1]}");
         }
     }
 
@@ -397,6 +405,7 @@
         int slotWidth = SlotWidth;
         var leftOffset = startIndex * slotWidth;
         var width = (endIndex - startIndex + 1) * slotWidth;
+
 
         return $"left: {leftOffset}px; width: {width}px;";
     }
