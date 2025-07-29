@@ -3,18 +3,29 @@
 @using Microsoft.JSInterop
 
 @code {
-    private int SlotWidth => (CurrentView == "Day") ? 67 : (int)Math.Floor(1400.0 / TimeSlots.Count);
+    private int GanttMaxWidth => 1200; // 可調整最大寬度
+    private int SlotWidth => (CurrentView == "Month") ? (int)Math.Floor((double)GanttMaxWidth / TimeSlots.Count) : (CurrentView == "Day" ? 67 : (int)Math.Floor(1400.0 / TimeSlots.Count));
     private int TimelineWidth => TimeSlots.Count * SlotWidth;
 }
 
-<div style="width:1000px; height:500px; position:relative;">
+<div style="width:1200px; height:500px; position:relative;">
     <div class="gantt-outer">
         <div class="gantt-corner"></div>
         <div class="gantt-timeline-scroll" id="gantt-timeline-scroll">
-            <div class="gantt-timeline" style="width:@TimelineWidth">
-                @foreach (var slot in TimeSlots)
+            <div class="gantt-timeline" style="width:@GanttMaxWidth px">
+                @if (CurrentView == "Month")
                 {
-                    <div class="timeline-slot @(CurrentView == "Day" ? "day-slot" : null)" style="width:@SlotWidth">@FormatTimeSlot(slot)</div>
+                    for (int i = 0; i < TimeSlots.Count; i++)
+                    {
+                        <div class="timeline-slot" style="width:calc(100%/@TimeSlots.Count)">@FormatTimeSlot(TimeSlots[i])</div>
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < TimeSlots.Count; i++)
+                    {
+                        <div class="timeline-slot @(CurrentView == "Day" ? "day-slot" : null)" style="width:@SlotWidth">@FormatTimeSlot(TimeSlots[i])</div>
+                    }
                 }
             </div>
         </div>
@@ -26,7 +37,7 @@
                 }
             </div>
             <div class="gantt-tasks-scroll" id="gantt-tasks-scroll">
-                <div class="gantt-tasks" style="width:@TimelineWidth">
+                <div class="gantt-tasks" style="width:@GanttMaxWidth px">
                     @for (int i = 0; i < TaskRows.Count; i++)
                     {
                         <div class="row-tasks" id="row-tasks-@i">
@@ -152,7 +163,7 @@
     color: white;
     padding: 5px;
     border-radius: 3px;
-    margin: 2px 0;
+    margin: 5px 0;
     min-width: 50px;
     text-align: left;
     cursor: pointer;
@@ -200,132 +211,132 @@
                 Color = "#4CAF50",
                 Tasks = new List<TaskItem>
                 {
-                    new TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
-                    new TaskItem { Name = "Task 2", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 15) },
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 16), End = new DateTime(2025, 7, 31) }
+                    new TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 25), End = new DateTime(2025, 7, 31) },
+                    new TaskItem { Name = "Task 2", Start = new DateTime(2025, 8, 1), End = new DateTime(2025, 8, 5) },
+                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 8, 16), End = new DateTime(2025, 8, 31) }
                 }
              },
-            new TaskRow
-            {
-                Name = "Project B",
-                Color = "#2196F3",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 12) },
-                    new TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 7, 19) },
-                    new TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project C",
-                Color = "#FFC107",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
-                    new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project D",
-                Color = "#E91E63",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 12) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 8, 18) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project E",
-                Color = "#9C27B0",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project F",
-                Color = "#00BCD4",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project G",
-                Color = "#8BC34A",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project H",
-                Color = "#FF9800",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project I",
-                Color = "#795548",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 001",
-                Color = "#607D8B",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 002",
-                Color = "#F44336",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 003",
-                Color = "#4CAF50",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 004",
-                Color = "#FFC107",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            }
+            // new TaskRow
+            // {
+            //     Name = "Project B",
+            //     Color = "#2196F3",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 12) },
+            //         new TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 7, 19) },
+            //         new TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project C",
+            //     Color = "#FFC107",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
+            //         new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project D",
+            //     Color = "#E91E63",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 12) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 8, 18) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project E",
+            //     Color = "#9C27B0",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project F",
+            //     Color = "#00BCD4",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project G",
+            //     Color = "#8BC34A",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project H",
+            //     Color = "#FF9800",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project I",
+            //     Color = "#795548",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project 001",
+            //     Color = "#607D8B",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project 002",
+            //     Color = "#F44336",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project 003",
+            //     Color = "#4CAF50",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // },
+            // new TaskRow
+            // {
+            //     Name = "Project 004",
+            //     Color = "#FFC107",
+            //     Tasks = new List<TaskItem>
+            //     {
+            //         new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+            //         new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+            //     }
+            // }
         };
 
         UpdateTimeSlots();
@@ -358,20 +369,21 @@
                     TimeSlots.Add(date);
                 break;
             case "Month":
-                minDate = new DateTime(minDate.Year, minDate.Month, 1);
-                maxDate = new DateTime(maxDate.Year, maxDate.Month, 1).AddMonths(1).AddDays(-1);
-                for (var date = minDate; date <= maxDate; date = date.AddMonths(1))
+                // 月模式：今天~今天+30天
+                var today = DateTime.Today;
+                var lastDay = today.AddDays(30);
+                for (var date = today; date <= lastDay; date = date.AddDays(1))
                     TimeSlots.Add(date);
                 break;
             case "Quarter":
                 minDate = minDate.AddDays(-(int)minDate.DayOfWeek);
-                maxDate = maxDate.AddDays(7 - (int)maxDate.DayOfWeek);
+                maxDate = maxDate.AddDays(7 - (int)minDate.DayOfWeek);
                 for (var date = minDate; date <= maxDate; date = date.AddDays(7))
                     TimeSlots.Add(date);
                 break;
             case "Year":
                 minDate = new DateTime(minDate.Year, 1, 1);
-                maxDate = new DateTime(maxDate.Year, 12, 31);
+                maxDate = new DateTime(minDate.Year, 12, 31);
                 for (var date = minDate; date <= maxDate; date = date.AddMonths(1))
                     TimeSlots.Add(date);
                 break;
@@ -390,7 +402,7 @@
         return CurrentView switch
         {
             "Day" => slot.ToString("M/d"),
-            "Month" => slot.ToString("MMM yyyy"),
+            "Month" => slot.Day.ToString(),
             "Quarter" => $"{slot:MM/dd} - {slot.AddDays(6):MM/dd}",
             "Year" => slot.ToString("yyyy"),
             _ => slot.ToString("d MMM yyyy")
@@ -401,18 +413,27 @@
     {
         if (TimeSlots == null || TimeSlots.Count == 0)
             return "";
-
-        int startIndex = TimeSlots.FindIndex(d => d.Date == task.Start.Date);
-        int endIndex = TimeSlots.FindIndex(d => d.Date == task.End.Date);
-
-        if (startIndex == -1 || endIndex == -1)
-            return "";
-
+        int startIndex, endIndex;
+        if (CurrentView == "Month")
+        {
+            // 限制任務顯示在 TimeSlots 範圍內
+            var slotStart = TimeSlots.First();
+            var slotEnd = TimeSlots.Last();
+            var taskStart = task.Start < slotStart ? slotStart : task.Start;
+            var taskEnd = task.End > slotEnd ? slotEnd : task.End;
+            startIndex = TimeSlots.FindIndex(d => d.Date == taskStart.Date);
+            endIndex = TimeSlots.FindIndex(d => d.Date == taskEnd.Date);
+        }
+        else
+        {
+            startIndex = TimeSlots.FindIndex(d => d.Date == task.Start.Date);
+            endIndex = TimeSlots.FindIndex(d => d.Date == task.End.Date);
+        }
+        if (startIndex == -1 || endIndex == -1 || endIndex < startIndex)
+            return "display:none;";
         int slotWidth = SlotWidth;
         var leftOffset = startIndex * slotWidth;
         var width = (endIndex - startIndex + 1) * slotWidth;
-
-
         return $"left: {leftOffset}px; width: {width}px;";
     }
 
