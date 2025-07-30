@@ -182,166 +182,33 @@
     [Parameter]
     public string CurrentView { get; set; } = "Day";
 
-    private List<TaskRow> TaskRows { get; set; } = new();
+    [Parameter]
+    public List<TaskRow> TaskRows { get; set; } = new();
+
     private List<DateTime> TimeSlots { get; set; } = new();
 
-    private class TaskRow
+    public class TaskRow
     {
         public string Name { get; set; } = string.Empty;
         public List<TaskItem> Tasks { get; set; } = new();
         public string Color { get; set; } = "#4CAF50"; // 預設顏色
     }
 
-    private class TaskItem
+    public class TaskItem
     {
         public string Name { get; set; } = string.Empty;
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
     }
 
-    protected override void OnInitialized()
-    {
-        // Sample data
-        TaskRows = new List<TaskRow>
-        {
-            new TaskRow
-            {
-                Name = "Project A",
-                Color = "#4CAF50",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 25), End = new DateTime(2025, 7, 31) },
-                    new TaskItem { Name = "Task 2", Start = new DateTime(2025, 8, 1), End = new DateTime(2025, 8, 5) },
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 8, 16), End = new DateTime(2025, 8, 31) }
-                }
-             },
-            new TaskRow
-            {
-                Name = "Project B",
-                Color = "#2196F3",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 12) },
-                    new TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 7, 19) },
-                    new TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project C",
-                Color = "#FFC107",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
-                    new TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project D",
-                Color = "#E91E63",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 12) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 8, 18) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project E",
-                Color = "#9C27B0",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project F",
-                Color = "#00BCD4",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project G",
-                Color = "#8BC34A",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project H",
-                Color = "#FF9800",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project I",
-                Color = "#795548",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 001",
-                Color = "#607D8B",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 002",
-                Color = "#F44336",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 003",
-                Color = "#4CAF50",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            },
-            new TaskRow
-            {
-                Name = "Project 004",
-                Color = "#FFC107",
-                Tasks = new List<TaskItem>
-                {
-                    new TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
-                    new TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
-                }
-            }
-        };
 
+
+    protected override void OnParametersSet()
+    {
         UpdateTimeSlots();
     }
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
         UpdateTimeSlots();
     }
@@ -368,17 +235,30 @@
                     TimeSlots.Add(date);
                 break;
             case "Month":
-                // 月模式：今天~今天+30天
+                // 月模式：當下到+30天
                 var today = DateTime.Today;
-                var lastDay = today.AddDays(30);
-                for (var date = today; date <= lastDay; date = date.AddDays(1))
+                var monthEnd = today.AddDays(30);
+                for (var date = today; date <= monthEnd; date = date.AddDays(1))
                     TimeSlots.Add(date);
                 break;
             case "Quarter":
-                minDate = minDate.AddDays(-(int)minDate.DayOfWeek);
-                maxDate = maxDate.AddDays(7 - (int)minDate.DayOfWeek);
-                for (var date = minDate; date <= maxDate; date = date.AddDays(7))
-                    TimeSlots.Add(date);
+                // 季視圖：以週為單位，從當前日期所在週開始
+                var quarterToday = DateTime.Today;
+                // 找到當前日期所在週的週一
+                var currentWeekMonday = quarterToday.AddDays(-(int)quarterToday.DayOfWeek + (int)DayOfWeek.Monday);
+                // 如果今天是週日，DayOfWeek.Sunday = 0，需要特殊處理
+                if (quarterToday.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    currentWeekMonday = quarterToday.AddDays(-6);
+                }
+                
+                // 從當前週開始，生成足夠的週數來填滿視圖
+                var weekCount = 20; // 生成20週來填滿視圖
+                for (int i = 0; i < weekCount; i++)
+                {
+                    var weekStart = currentWeekMonday.AddDays(i * 7);
+                    TimeSlots.Add(weekStart);
+                }
                 break;
             case "Year":
                 minDate = new DateTime(minDate.Year, 1, 1);
@@ -402,7 +282,7 @@
         {
             "Day" => slot.ToString("M/d"),
             "Month" => slot.Day.ToString(),
-            "Quarter" => $"{slot:MM/dd}",
+            "Quarter" => slot.ToString("M/d"), // 季視圖顯示週的開始日期
             "Year" => slot.ToString("yyyy"),
             _ => slot.ToString("d MMM yyyy")
         };
@@ -424,36 +304,74 @@
             return "display:none;";
         }
 
-        // 2. 尋找任務開始與結束日期在時間軸上的索引
-        int startIndex = TimeSlots.FindIndex(d => d.Date == taskStartDate);
-        int endIndex = TimeSlots.FindIndex(d => d.Date == taskEndDate);
-
-        // 3. 處理任務超出可視範圍的情況
-        if (startIndex == -1)
+        // 2. 根據視圖類型處理任務位置
+        if (CurrentView == "Quarter")
         {
-            // 任務開始日期在可視範圍之前，從頭開始顯示
-            startIndex = 0;
-        }
-        if (endIndex == -1)
-        {
-            // 任務結束日期在可視範圍之後，顯示到結尾
-            endIndex = TimeSlots.Count - 1;
-        }
-
-        // 4. 根據視圖計算樣式
-        if (CurrentView == "Month")
-        {
-            double leftPercent = (double)startIndex / TimeSlots.Count * 100;
-            double widthPercent = (double)(endIndex - startIndex + 1) / TimeSlots.Count * 100;
-            return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}%; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}%;";
+            // 季視圖：任務必須對齊週的邊界
+            return GetQuarterTaskStyle(task);
         }
         else
         {
-            int slotWidth = SlotWidth;
-            var leftOffset = startIndex * slotWidth;
-            var width = (endIndex - startIndex + 1) * slotWidth;
-            return $"left: {leftOffset}px; width: {width}px;";
+            // 其他視圖：原有的邏輯
+            int startIndex = TimeSlots.FindIndex(d => d.Date == taskStartDate);
+            int endIndex = TimeSlots.FindIndex(d => d.Date == taskEndDate);
+
+            // 處理任務超出可視範圍的情況
+            if (startIndex == -1)
+            {
+                startIndex = 0;
+            }
+            if (endIndex == -1)
+            {
+                endIndex = TimeSlots.Count - 1;
+            }
+
+            if (CurrentView == "Month")
+            {
+                double leftPercent = (double)startIndex / TimeSlots.Count * 100;
+                double widthPercent = (double)(endIndex - startIndex + 1) / TimeSlots.Count * 100;
+                return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}%; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}%;";
+            }
+            else
+            {
+                int slotWidth = SlotWidth;
+                var leftOffset = startIndex * slotWidth;
+                var width = (endIndex - startIndex + 1) * slotWidth;
+                return $"left: {leftOffset}px; width: {width}px;";
+            }
         }
+    }
+
+    private string GetQuarterTaskStyle(TaskItem task)
+    {
+        // 找到任務開始和結束日期所在的週
+        var taskStartWeek = GetWeekStart(task.Start.Date);
+        var taskEndWeek = GetWeekStart(task.End.Date);
+        
+        // 找到這些週在時間軸上的索引
+        int startIndex = TimeSlots.FindIndex(d => d.Date == taskStartWeek);
+        int endIndex = TimeSlots.FindIndex(d => d.Date == taskEndWeek);
+        
+        // 如果任務週不在可視範圍內，不顯示
+        if (startIndex == -1 || endIndex == -1)
+        {
+            return "display:none;";
+        }
+        
+        // 計算位置和寬度
+        int slotWidth = SlotWidth;
+        var leftOffset = startIndex * slotWidth;
+        var width = (endIndex - startIndex + 1) * slotWidth;
+        return $"left: {leftOffset}px; width: {width}px;";
+    }
+
+    private DateTime GetWeekStart(DateTime date)
+    {
+        // 找到該日期所在週的週一
+        var dayOfWeek = (int)date.DayOfWeek;
+        var daysToSubtract = dayOfWeek - (int)DayOfWeek.Monday;
+        if (daysToSubtract < 0) daysToSubtract += 7; // 處理週日的情況
+        return date.AddDays(-daysToSubtract);
     }
 
     private string GetTaskColor(string baseColor, TaskItem task)

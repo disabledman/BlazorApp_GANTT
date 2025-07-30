@@ -14,7 +14,7 @@
     </select>
 </div>
 
-<GanttComponent CurrentView="@CurrentView" />
+<GanttComponent CurrentView="@CurrentView" TaskRows="@TaskRows" />
 
 @code {
     private string currentView = "Day";
@@ -28,5 +28,147 @@
                 currentView = value;
             }
         }
+    }
+
+    private List<GanttComponent.TaskRow> TaskRows { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        // Sample data
+        TaskRows = new List<GanttComponent.TaskRow>
+        {
+            new GanttComponent.TaskRow
+            {
+                Name = "Project A",
+                Color = "#4CAF50",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 25), End = new DateTime(2025, 7, 31) },
+                    new GanttComponent.TaskItem { Name = "Task 2", Start = new DateTime(2025, 8, 1), End = new DateTime(2025, 8, 5) },
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 8, 16), End = new DateTime(2025, 8, 31) }
+                }
+             },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project B",
+                Color = "#2196F3",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 12) },
+                    new GanttComponent.TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 7, 19) },
+                    new GanttComponent.TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project C",
+                Color = "#FFC107",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 1), End = new DateTime(2025, 7, 5) },
+                    new GanttComponent.TaskItem { Name = "Task 4", Start = new DateTime(2025, 7, 10), End = new DateTime(2025, 7, 15) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project D",
+                Color = "#E91E63",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 6), End = new DateTime(2025, 7, 12) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 14), End = new DateTime(2025, 8, 18) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project E",
+                Color = "#9C27B0",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project F",
+                Color = "#00BCD4",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project G",
+                Color = "#8BC34A",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project H",
+                Color = "#FF9800",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project I",
+                Color = "#795548",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project 001",
+                Color = "#607D8B",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project 002",
+                Color = "#F44336",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project 003",
+                Color = "#4CAF50",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            },
+            new GanttComponent.TaskRow
+            {
+                Name = "Project 004",
+                Color = "#FFC107",
+                Tasks = new List<GanttComponent.TaskItem>
+                {
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8), End = new DateTime(2025, 7, 20) },
+                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21), End = new DateTime(2025, 8, 5) }
+                }
+            }
+        };
     }
 }
