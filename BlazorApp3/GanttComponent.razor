@@ -402,7 +402,7 @@
         {
             "Day" => slot.ToString("M/d"),
             "Month" => slot.Day.ToString(),
-            "Quarter" => $"{slot:MM/dd} - {slot.AddDays(6):MM/dd}",
+            "Quarter" => $"{slot:MM/dd}",
             "Year" => slot.ToString("yyyy"),
             _ => slot.ToString("d MMM yyyy")
         };
