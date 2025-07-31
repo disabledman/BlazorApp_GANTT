@@ -13,10 +13,11 @@
     </select>
 </div>
 
-<GanttComponent CurrentView="@CurrentView" TaskRows="@TaskRows" />
+<GanttComponent CurrentView="@CurrentView" TaskRows="@TaskRows" StartDate="@StartDate"/>
 
 @code {
     private string currentView = "Month";
+    private DateTime StartDate = DateTime.Now;
     private string CurrentView
     {
         get => currentView;

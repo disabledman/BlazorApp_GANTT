@@ -4,8 +4,8 @@
 
 @code {
     private int GanttMaxWidth => 1200; // 可調整最大寬度
-    private int SlotWidth => (CurrentView == "Month") ? (int)Math.Floor((double)GanttMaxWidth / TimeSlots.Count) : (CurrentView == "Day" ? 67 : (int)Math.Floor(1400.0 / TimeSlots.Count));
-    private int TimelineWidth => TimeSlots.Count * SlotWidth;
+    private int SlotWidth => (CurrentView == "Month") ? (int)Math.Floor((double)GanttMaxWidth / m_TimeSlots.Count) : (CurrentView == "Day" ? 67 : (int)Math.Floor(1400.0 / m_TimeSlots.Count));
+    private int TimelineWidth => m_TimeSlots.Count * SlotWidth;
 }
 
 <div style="width:1200px; height:500px; position:relative;">
@@ -15,16 +15,16 @@
             <div class="gantt-timeline" style="width:@GanttMaxWidth px">
                 @if (CurrentView == "Month")
                 {
-                    for (int i = 0; i < TimeSlots.Count; i++)
+                    for (int i = 0; i < m_TimeSlots.Count; i++)
                     {
-                        <div class="timeline-slot" style="width:calc(100%/@TimeSlots.Count)">@FormatTimeSlot(TimeSlots[i])</div>
+                        <div class="timeline-slot" style="width:calc(100%/@m_TimeSlots.Count)">@FormatTimeSlot(m_TimeSlots[i])</div>
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < TimeSlots.Count; i++)
+                    for (int i = 0; i < m_TimeSlots.Count; i++)
                     {
-                        <div class="timeline-slot @(CurrentView == "Day" ? "day-slot" : null)" style="width:@SlotWidth">@FormatTimeSlot(TimeSlots[i])</div>
+                        <div class="timeline-slot @(CurrentView == "Day" ? "day-slot" : null)" style="width:@SlotWidth">@FormatTimeSlot(m_TimeSlots[i])</div>
                     }
                 }
             </div>
@@ -185,7 +185,13 @@
     [Parameter]
     public List<TaskRow> TaskRows { get; set; } = new();
 
-    private List<DateTime> TimeSlots { get; set; } = new();
+    [Parameter]
+    public DateTime StartDate { get; set; } = DateTime.Today;
+
+    //
+    private DateTime m_EndDate = DateTime.Now; // 視圖結束日期
+    private List<TaskRow> m_ViewabledTaskRows { get; set; } = new(); // 可視範圍內的任務行
+    private List<DateTime> m_TimeSlots { get; set; } = new();
 
     public class TaskRow
     {
@@ -201,45 +207,69 @@
         public DateTime End { get; set; }
     }
 
-
-
+    //
     protected override void OnParametersSet()
     {
         UpdateTimeSlots();
     }
 
+    //
     protected override void OnInitialized()
     {
         UpdateTimeSlots();
     }
 
+    //
     private void UpdateTimeSlots()
     {
-        TimeSlots.Clear();
+        m_TimeSlots.Clear();
+        m_ViewabledTaskRows.Clear();
 
+        //
         if (TaskRows.Count == 0 || TaskRows.All(r => r.Tasks.Count == 0))
             return;
 
-        var allTasks = TaskRows.SelectMany(r => r.Tasks).ToList();
+        //
+        m_EndDate = DateTime.Now;
+
+        // 依據當前視圖類型，計算時間軸的起始和結束日期
+        if (CurrentView == "Month")
+        {
+            // 月視圖：從當前日期開始，顯示未來29天
+            m_EndDate = StartDate.AddDays(29);
+        }
+        else if (CurrentView == "Quarter")
+        {
+            // 季視圖：從當前日期所在週的週一開始，顯示13週
+            m_EndDate = StartDate.AddDays(13 * 7);
+        }
+        else if (CurrentView == "Year")
+        {
+            // 年視圖：從當前日期月份開始，共12個月
+            m_EndDate = StartDate.AddMonths(12);
+        }
+
+        // 過濾出在此區間中的 TaskRows
+        // 過濾出重疊此區間的任務
+        m_ViewabledTaskRows = TaskRows
+            .Where(r => r.Tasks.Any(t => t.Start <= m_EndDate && t.End >= StartDate))
+            .ToList();
+
+        // 計算時間軸的時間槽
+        var allTasks = m_ViewabledTaskRows.SelectMany(r => r.Tasks).ToList();
         var minDate = allTasks.Min(t => t.Start).Date;  // 所有任務的最早開始日
         var maxDate = allTasks.Max(t => t.End).Date;    // 所有任務的最晚結束日
 
-        // 加 buffer（前後各 15 天）
-        minDate = minDate.AddDays(-15);
-        maxDate = maxDate.AddDays(15);
-
+        //
         switch (CurrentView)
         {
             case "Month":
-                // 月模式：當下到+30天
-                var today = DateTime.Today;
-                var monthEnd = today.AddDays(30);
-                for (var date = today; date <= monthEnd; date = date.AddDays(1))
-                    TimeSlots.Add(date);
+                for (var date = StartDate; date <= m_EndDate; date = date.AddDays(1))
+                    m_TimeSlots.Add(date);
                 break;
             case "Quarter":
                 // 季視圖：以週為單位，從當前日期所在週開始
-                var quarterToday = DateTime.Today;
+                var quarterToday = StartDate;
                 // 找到當前日期所在週的週一
                 var currentWeekMonday = quarterToday.AddDays(-(int)quarterToday.DayOfWeek + (int)DayOfWeek.Monday);
                 // 如果今天是週日，DayOfWeek.Sunday = 0，需要特殊處理
@@ -249,47 +279,42 @@
                 }
                 
                 // 從當前週開始，生成足夠的週數來填滿視圖
-                var weekCount = 20; // 生成20週來填滿視圖
+                var weekCount = 13; // 生成13週來填滿視圖
                 for (int i = 0; i < weekCount; i++)
                 {
                     var weekStart = currentWeekMonday.AddDays(i * 7);
-                    TimeSlots.Add(weekStart);
+                    m_TimeSlots.Add(weekStart);
                 }
                 break;
             case "Year":
-                minDate = new DateTime(minDate.Year, 1, 1);
-                maxDate = new DateTime(minDate.Year, 12, 31);
+                // 從當前日期月份開始，共12個月
+                minDate = new DateTime(minDate.Year, minDate.Month, 1);
+                maxDate = minDate.AddMonths(11);
                 for (var date = minDate; date <= maxDate; date = date.AddMonths(1))
-                    TimeSlots.Add(date);
+                    m_TimeSlots.Add(date);
                 break;
-        }
-
-        // Debug: 印出時間軸資訊
-        Console.WriteLine($"TimeSlots.Count: {TimeSlots.Count}, TimelineWidth: {TimelineWidth}");
-        if (TimeSlots.Count > 0)
-        {
-            Console.WriteLine($"First Date: {TimeSlots[0]}, Last Date: {TimeSlots[TimeSlots.Count-1]}");
         }
     }
 
+    // 格式化時間槽的顯示
     private string FormatTimeSlot(DateTime slot)
     {
         return CurrentView switch
         {
             "Month" => slot.Day.ToString(),
-            "Quarter" => slot.ToString("M/d"), // 季視圖顯示週的開始日期
+            "Quarter" => slot.ToString("M/d"), 
             "Year" => slot.ToString("yyyy"),
-            _ => slot.ToString("d MMM yyyy")
+            _ => slot.ToString("")
         };
     }
 
     private string GetTaskStyle(TaskItem task)
     {
-        if (TimeSlots == null || TimeSlots.Count == 0)
+        if (m_TimeSlots == null || m_TimeSlots.Count == 0)
             return "display:none;";
 
-        var viewStartDate = TimeSlots.First().Date;
-        var viewEndDate = TimeSlots.Last().Date;
+        var viewStartDate = m_TimeSlots.First().Date;
+        var viewEndDate = m_TimeSlots.Last().Date;
         var taskStartDate = task.Start.Date;
         var taskEndDate = task.End.Date;
 
@@ -308,8 +333,8 @@
         else
         {
             // 其他視圖：原有的邏輯
-            int startIndex = TimeSlots.FindIndex(d => d.Date == taskStartDate);
-            int endIndex = TimeSlots.FindIndex(d => d.Date == taskEndDate);
+            int startIndex = m_TimeSlots.FindIndex(d => d.Date == taskStartDate);
+            int endIndex = m_TimeSlots.FindIndex(d => d.Date == taskEndDate);
 
             // 處理任務超出可視範圍的情況
             if (startIndex == -1)
@@ -318,13 +343,13 @@
             }
             if (endIndex == -1)
             {
-                endIndex = TimeSlots.Count - 1;
+                endIndex = m_TimeSlots.Count - 1;
             }
 
             if (CurrentView == "Month")
             {
-                double leftPercent = (double)startIndex / TimeSlots.Count * 100;
-                double widthPercent = (double)(endIndex - startIndex + 1) / TimeSlots.Count * 100;
+                double leftPercent = (double)startIndex / m_TimeSlots.Count * 100;
+                double widthPercent = (double)(endIndex - startIndex + 1) / m_TimeSlots.Count * 100;
                 return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}%; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}%;";
             }
             else
@@ -344,8 +369,8 @@
         var taskEndWeek = GetWeekStart(task.End.Date);
         
         // 找到這些週在時間軸上的索引
-        int startIndex = TimeSlots.FindIndex(d => d.Date == taskStartWeek);
-        int endIndex = TimeSlots.FindIndex(d => d.Date == taskEndWeek);
+        int startIndex = m_TimeSlots.FindIndex(d => d.Date == taskStartWeek);
+        int endIndex = m_TimeSlots.FindIndex(d => d.Date == taskEndWeek);
         
         // 如果任務週不在可視範圍內，不顯示
         if (startIndex == -1 || endIndex == -1)
