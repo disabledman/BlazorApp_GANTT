@@ -180,7 +180,7 @@
 
 @code {
     [Parameter]
-    public string CurrentView { get; set; } = "Day";
+    public string CurrentView { get; set; } = "Month";
 
     [Parameter]
     public List<TaskRow> TaskRows { get; set; } = new();
@@ -230,10 +230,6 @@
 
         switch (CurrentView)
         {
-            case "Day":
-                for (var date = minDate; date <= maxDate; date = date.AddDays(1))
-                    TimeSlots.Add(date);
-                break;
             case "Month":
                 // 月模式：當下到+30天
                 var today = DateTime.Today;
@@ -280,7 +276,6 @@
     {
         return CurrentView switch
         {
-            "Day" => slot.ToString("M/d"),
             "Month" => slot.Day.ToString(),
             "Quarter" => slot.ToString("M/d"), // 季視圖顯示週的開始日期
             "Year" => slot.ToString("yyyy"),
