@@ -471,25 +471,45 @@
     //
     private string _GetYearTaskStyle(TaskItem task)
     {
-        // 找到任務開始和結束日期所在的週
-        var taskStartWeek = GetWeekStart(task.Start.Date);
-        var taskEndWeek = GetWeekStart(task.End.Date);
+        var taskStartDate = task.Start.Date;
+        var taskEndDate = task.End.Date;
+        var viewStartDate = m_TimeSlots.First().Date;
+        var viewEndDate = m_TimeSlots.Last().Date;
 
-        // 找到這些週在時間軸上的索引
-        int startIndex = m_TimeSlots.FindIndex(d => d.Date == taskStartWeek);
-        int endIndex = m_TimeSlots.FindIndex(d => d.Date == taskEndWeek);
-
-        // 如果任務週不在可視範圍內，不顯示
-        if (startIndex == -1 || endIndex == -1)
+        // 判斷任務是否在可視範圍內
+        if (taskStartDate > viewEndDate || taskEndDate < viewStartDate)
+        {
+            return "display:none;";
+        }
+        // 確保結束日期不早於開始日期
+        if (taskEndDate < taskStartDate)
         {
             return "display:none;";
         }
 
-        // 計算位置和寬度
-        int slotWidth = 20;// SlotWidth;
-        var leftOffset = startIndex * slotWidth;
-        var width = (endIndex - startIndex + 1) * slotWidth;
-        return $"left: {leftOffset}px; width: {width}px;";
+        // 確定任務開始和結束日期在時間槽中
+        if (taskStartDate < viewStartDate)
+        {
+            taskStartDate = viewStartDate; // 確保開始日期不早於可視範圍
+        }
+        if (taskEndDate > viewEndDate)
+        {
+            taskEndDate = viewEndDate; // 確保結束日期不晚於可視範圍
+        }
+
+        // 取得任務在哪個時間槽中
+        int startIndex = m_TimeSlots.FindIndex(d => d.Date <= taskStartDate && d.Date.AddMonths(1) >= taskStartDate);
+        int endIndex = m_TimeSlots.FindIndex(d => d.Date <= taskEndDate && d.Date.AddMonths(1) >= taskEndDate);
+
+        // 計算任務起始和結束日期各在該時間槽中的位置
+        // 任務起始日相對該槽第一天的偏移量
+        var leftPercent = (taskStartDate - viewStartDate).TotalDays * (m_TimeSlotsWidth[startIndex] / (DateTime.DaysInMonth(m_TimeSlots[startIndex].Year, m_TimeSlots[startIndex].Month)));
+        // 任務結束日相對該槽第一天的偏移量
+        var widthPercent = ((taskEndDate - m_TimeSlots[endIndex].Date).TotalDays + 1) * (m_TimeSlotsWidth[endIndex] / (DateTime.DaysInMonth(m_TimeSlots[startIndex].Year, m_TimeSlots[startIndex].Month)))
+            + (m_TimeSlotsWidth.Take(endIndex).Sum())
+            - leftPercent;
+
+        return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}px; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}px;";
     }
 
     private DateTime GetWeekStart(DateTime date)
