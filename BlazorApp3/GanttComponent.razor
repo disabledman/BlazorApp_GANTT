@@ -383,39 +383,9 @@
             default:
                 return "display:none;";
         }
-        // else
-        // {
-        //     // 其他視圖：原有的邏輯
-        //     int startIndex = m_TimeSlots.FindIndex(d => d.Date == taskStartDate);
-        //     int endIndex = m_TimeSlots.FindIndex(d => d.Date == taskEndDate);
-
-        //     // 處理任務超出可視範圍的情況
-        //     if (startIndex == -1)
-        //     {
-        //         startIndex = 0;
-        //     }
-        //     if (endIndex == -1)
-        //     {
-        //         endIndex = m_TimeSlots.Count - 1;
-        //     }
-
-        //     if (CurrentView == "Month")
-        //     {
-        //         double leftPercent = (double)startIndex / m_TimeSlots.Count * 100;
-        //         double widthPercent = (double)(endIndex - startIndex + 1) / m_TimeSlots.Count * 100;
-        //         return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}%; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}%;";
-        //     }
-        //     else
-        //     {
-        //         int slotWidth = SlotWidth;
-        //         var leftOffset = startIndex * slotWidth;
-        //         var width = (endIndex - startIndex + 1) * slotWidth;
-        //         return $"left: {leftOffset}px; width: {width}px;";
-        //     }
-        // }
     }
 
-    //
+    // 
     private string _GetMonthTaskStyle(TaskItem task)
     {
         var taskStartDate = task.Start.Date;
@@ -483,12 +453,17 @@
             taskEndDate = viewEndDate; // 確保結束日期不晚於可視範圍
         }
 
-        // 計算任務在時間槽中的位置和寬度
-        int startIndex = m_TimeSlots.FindIndex(d => d.Date == taskStartDate);
-        int endIndex = m_TimeSlots.FindIndex(d => d.Date == taskEndDate);
+        // 取得任務在哪個時間槽中
+        int startIndex = m_TimeSlots.FindIndex(d => d.Date <= taskStartDate && d.Date.AddDays(6) >= taskStartDate);
+        int endIndex = m_TimeSlots.FindIndex(d => d.Date <= taskEndDate && d.Date.AddDays(6) >= taskEndDate);
 
-        double leftPercent = startIndex > 0 ? m_TimeSlotsWidth.Take(startIndex).Sum() : 0;
-        double widthPercent = m_TimeSlotsWidth.Take(endIndex + 1).Sum() - leftPercent;
+        // 計算任務起始和結束日期各在該時間槽中的位置
+        // 任務起始日相對該槽第一天的偏移量
+        var leftPercent = (taskStartDate - viewStartDate).TotalDays * (m_TimeSlotsWidth[startIndex] / 7);
+        // 任務結束日相對該槽第一天的偏移量
+        var widthPercent = ((taskEndDate - m_TimeSlots[endIndex].Date).TotalDays + 1) * (m_TimeSlotsWidth[endIndex] / 7)
+            + (m_TimeSlotsWidth.Take(endIndex).Sum())
+            - leftPercent;
 
         return $"left: {leftPercent.ToString(CultureInfo.InvariantCulture)}px; width: {widthPercent.ToString(CultureInfo.InvariantCulture)}px;";
     }

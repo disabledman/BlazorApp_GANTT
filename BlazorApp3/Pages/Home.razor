@@ -16,8 +16,8 @@
 <GanttComponent CurrentView="@CurrentView" TaskRows="@TaskRows" StartDate="@StartDate"/>
 
 @code {
-    private string currentView = "Month";
-    private DateTime StartDate = new DateTime(2025, 11, 1, 0, 0, 0);
+    private string currentView = "Quarter";
+    private DateTime StartDate = new DateTime(2025, 7, 31, 0, 0, 0);
     private string CurrentView
     {
         get => currentView;
@@ -43,9 +43,9 @@
                 Color = "#4CAF50",
                 Tasks = new List<GanttComponent.TaskItem>
                 {
-                    new GanttComponent.TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 25, 0, 0, 0), End = new DateTime(2025, 7, 31, 23, 59, 59) },
-                    new GanttComponent.TaskItem { Name = "Task 2", Start = new DateTime(2025, 8, 1, 0, 0, 0), End = new DateTime(2025, 8, 5, 23, 59, 59) },
-                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 8, 10, 0, 0, 0), End = new DateTime(2025, 8, 15, 23, 59, 59) },
+                    new GanttComponent.TaskItem { Name = "Task 1", Start = new DateTime(2025, 7, 30, 0, 0, 0), End = new DateTime(2025, 8, 2, 23, 59, 59) },
+                    new GanttComponent.TaskItem { Name = "Task 2", Start = new DateTime(2025, 8, 3, 0, 0, 0), End = new DateTime(2025, 8, 5, 23, 59, 59) },
+                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 8, 11, 0, 0, 0), End = new DateTime(2025, 8, 17, 23, 59, 59) },
                 }
              },
             new GanttComponent.TaskRow
@@ -56,7 +56,7 @@
                 {
                     new GanttComponent.TaskItem { Name = "Task 21", Start = new DateTime(2025, 7, 8, 0, 0, 0), End = new DateTime(2025, 7, 12, 23, 59, 59) },
                     new GanttComponent.TaskItem { Name = "Task 22", Start = new DateTime(2025, 7, 14, 0, 0, 0), End = new DateTime(2025, 7, 19, 23, 59, 59) },
-                    new GanttComponent.TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21, 0, 0, 0), End = new DateTime(2025, 8, 5, 23, 59, 59) }
+                    new GanttComponent.TaskItem { Name = "Task 23", Start = new DateTime(2025, 7, 21, 0, 0, 0), End = new DateTime(2025, 8, 4, 23, 59, 59) }
                 }
             },
             new GanttComponent.TaskRow
@@ -85,8 +85,8 @@
                 Color = "#9C27B0",
                 Tasks = new List<GanttComponent.TaskItem>
                 {
-                    new GanttComponent.TaskItem { Name = "Task 3", Start = new DateTime(2025, 7, 8, 0, 0, 0), End = new DateTime(2025, 7, 20, 23, 59, 59) },
-                    new GanttComponent.TaskItem { Name = "Task 7", Start = new DateTime(2025, 7, 21, 0, 0, 0), End = new DateTime(2025, 8, 5, 23, 59, 59) }
+                    new GanttComponent.TaskItem { Name = "Task E1", Start = new DateTime(2025, 9, 1, 0, 0, 0), End = new DateTime(2025, 9, 10, 23, 59, 59) },
+                    new GanttComponent.TaskItem { Name = "Task E2", Start = new DateTime(2025, 9, 21, 0, 0, 0), End = new DateTime(2025, 10, 5, 23, 59, 59) }
                 }
             },
             new GanttComponent.TaskRow
