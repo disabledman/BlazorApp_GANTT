@@ -9,15 +9,32 @@
             <div class="gantt-timeline" style="width:100%">
                 @for (int i = 0; i < m_TimeSlots.Count; i++)
                 {
-                    if(i > 0 && CurrentView=="Month")
+                    if(i > 0)
                     {
-                        if(m_TimeSlots[i - 1].Year != m_TimeSlots[i].Year)
+                        if (CurrentView == "Month")
                         {
-                            <div class="timeline-slot middle" style="left:@(200 + m_TimeSlotsWidth.Take(i - 1).Sum())px;top:23px;">@m_TimeSlots[i].Year</div>
+                            if(m_TimeSlots[i - 1].Year != m_TimeSlots[i].Year)
+                            {
+                                <div class="timeline-slot middle" style="left:@(200 + m_TimeSlotsWidth.Take(i - 1).Sum())px;">@m_TimeSlots[i].Year</div>
+                            }
+                            else if (m_TimeSlots[i - 1].Month != m_TimeSlots[i].Month)
+                            {
+                                <div class="timeline-slot middle" style="left:@(200+m_TimeSlotsWidth.Take(i-1).Sum())px;">@m_TimeSlots[i].Month</div>
+                            }
                         }
-                        else if (m_TimeSlots[i - 1].Month != m_TimeSlots[i].Month)
+                        else if (CurrentView == "Quarter")
                         {
-                            <div class="timeline-slot middle" style="left:@(200+m_TimeSlotsWidth.Take(i-1).Sum())px;top:23px;">@m_TimeSlots[i].Month</div>
+                            if (m_TimeSlots[i - 1].Year != m_TimeSlots[i].Year)
+                            {
+                                <div class="timeline-slot middle" style="left:@(240 + m_TimeSlotsWidth.Take(i - 1).Sum())px;">@m_TimeSlots[i].Year</div>
+                            }
+                        }
+                        else if (CurrentView == "Year")
+                        {
+                            if (m_TimeSlots[i - 1].Year != m_TimeSlots[i].Year)
+                            {
+                                <div class="timeline-slot middle" style="left:@(247 + m_TimeSlotsWidth.Take(i - 1).Sum())px;">@m_TimeSlots[i].Year</div>
+                            }
                         }
                     }
                     <div class="timeline-slot" style="width:@($"{m_TimeSlotsWidth[i]}px;");color:@TimeSlotColor(m_TimeSlots[i]);">@FormatTimeSlot(m_TimeSlots[i])</div>
@@ -70,7 +87,7 @@
     background: #fff;
 }
 .timeline-slot {
-    /* border-right: 1px solid #ddd; */
+    border-right: 1px solid #ddd;
     padding: 5px 0;
     text-align: center;
     box-sizing: border-box;
@@ -79,6 +96,7 @@
 }
 .timeline-slot.middle {
             position: absolute;
+            top: 23px;
             padding: 0px 2px 0px 2px;
             background-color: #add8e6;
             color: white;
