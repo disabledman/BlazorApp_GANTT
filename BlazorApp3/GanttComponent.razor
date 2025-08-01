@@ -9,7 +9,7 @@
             <div class="gantt-timeline" style="width:100%">
                 @for (int i = 0; i < m_TimeSlots.Count; i++)
                 {
-                    if(i > 0)
+                    if(i > 0 && CurrentView=="Month")
                     {
                         if(m_TimeSlots[i - 1].Year != m_TimeSlots[i].Year)
                         {
@@ -259,17 +259,6 @@
             .Where(r => r.Tasks.Any(t => t.Start <= m_EndDate && t.End >= StartDate))
             .ToList();
 
-        if (m_ViewabledTaskRows.Count == 0)
-        {
-            // 如果沒有可視範圍內的任務，則不顯示時間槽
-            return;
-        }
-
-        // 計算時間軸的時間槽
-        var allTasks = m_ViewabledTaskRows.SelectMany(r => r.Tasks).ToList();
-        var minDate = allTasks.Min(t => t.Start).Date;  // 所有任務的最早開始日
-        var maxDate = allTasks.Max(t => t.End).Date;    // 所有任務的最晚結束日
-
         //
         switch (CurrentView)
         {
@@ -297,6 +286,16 @@
                 }
                 break;
             case "Year":
+                // 計算時間軸的時間槽
+                var minDate = DateTime.Now;
+                var maxDate = DateTime.Now;
+                // 如果有可視範圍內的任務行，則計算最早和最晚的任務日期
+                if (m_ViewabledTaskRows.Count > 0)
+                {
+                    var allTasks = m_ViewabledTaskRows.SelectMany(r => r.Tasks).ToList();
+                    minDate = allTasks.Min(t => t.Start).Date;  // 所有任務的最早開始日
+                    maxDate = allTasks.Max(t => t.End).Date;    // 所有任務的最晚結束日                
+                }
                 // 從當前日期月份開始，共12個月
                 minDate = new DateTime(minDate.Year, minDate.Month, 1);
                 maxDate = minDate.AddMonths(11);
