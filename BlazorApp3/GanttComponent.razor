@@ -43,19 +43,19 @@
         </div>
         <div class="gantt-main">
             <div class="gantt-label-scroll" id="gantt-label-scroll">
-                @for (int i = 0; i < TaskRows.Count; i++)
+                @for (int i = 0; i < m_ViewabledTaskRows.Count; i++)
                 {
-                    <div class="row-label" id="row-label-@i" style="background:@TaskRows[i].Color; color:#fff;">@TaskRows[i].Name</div>
+                    <div class="row-label" id="row-label-@i" style="background:@m_ViewabledTaskRows[i].Color; color:#fff;">@m_ViewabledTaskRows[i].Name</div>
                 }
             </div>
             <div class="gantt-tasks-scroll" id="gantt-tasks-scroll">
                 <div class="gantt-tasks" style="width:100%">
-                    @for (int i = 0; i < TaskRows.Count; i++)
+                    @for (int i = 0; i < m_ViewabledTaskRows.Count; i++)
                     {
                         <div class="row-tasks" id="row-tasks-@i">
-                            @foreach (var task in TaskRows[i].Tasks)
+                            @foreach (var task in m_ViewabledTaskRows[i].Tasks)
                             {
-                                <div class="task" style="@GetTaskStyle(task); background:@GetTaskColor(TaskRows[i].Color, task);">@task.Name</div>
+                                <div class="task" style="@GetTaskStyle(task); background:@GetTaskColor(m_ViewabledTaskRows[i].Color, task);">@task.Name</div>
                             }
                         </div>
                     }
